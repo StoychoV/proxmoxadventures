@@ -1,0 +1,14 @@
+The Download more LXC templates
+
+1. Select the desired OS and version here:
+https://images.linuxcontainers.org/images/
+
+2. Download the "rootfs.tar.xz" file using wget.
+
+3. Rename the archive so it includes the distro and the version in its name.
+
+4. Move the archive to:
+/var/lib/vz/template/cache
+
+5. Run the following command to update the current list of images:
+pveam update
