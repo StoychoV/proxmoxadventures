@@ -1,0 +1,30 @@
+Source -> https://forum.proxmox.com/threads/resize-lxc-disk-on-proxmox.68901/post-382737
+
+1. List the containers:
+pct list
+
+2. Stop the particular container you want to resize:
+pct stop 999
+
+3. Find out it's path on the node:
+lvdisplay | grep "LV Path\|LV Size"
+
+4.1 For good measure one can run a file system check:
+e2fsck -fy /dev/pve/vm-999-disk-0
+
+4.2 Resize the file system:
+resize2fs /dev/pve/vm-999-disk-0 10G
+
+4.3 Resize the local volume
+lvreduce -L 10G /dev/pve/vm-999-disk-0
+
+5. Edit the container's conf, look for the rootfs line and change accordingly:
+nano /etc/pve/lxc/999.conf
+rootfs: local-lvm:vm-999-disk-0,size=32G >> rootfs: local-lvm:vm-999-disk-0,size=10G
+
+6. Start it:
+pct start 999
+
+7. Enter it and check the new size:
+pct enter 999
+df -h
